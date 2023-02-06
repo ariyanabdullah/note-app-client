@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 import { authContext } from "../../Context/Context";
 const NoteCard = ({ note, index }) => {
   // console.log(note);
-  const { refetch } = useContext(authContext);
+  const { refetch, setIsEdit, isedit } = useContext(authContext);
   const { title, description, tagline, _id, pinned } = note;
 
   const oddClass =
@@ -15,7 +15,7 @@ const NoteCard = ({ note, index }) => {
     "card h-[310px]  bg-black relative text-primary-content shadow-lg ";
 
   const handleDelete = (id) => {
-    const url = `http://localhost:5000/notes/${id}`;
+    const url = `https://notebook-server-flax.vercel.app/notes/${id}`;
     fetch(url, {
       method: "DELETE",
     })
@@ -31,14 +31,12 @@ const NoteCard = ({ note, index }) => {
   };
 
   const handlePinned = (id) => {
-    const url = `http://localhost:5000/notes/${id}`;
+    const url = `https://notebook-server-flax.vercel.app/notes/${id}`;
     fetch(url, {
       method: "PATCH",
     })
       .then((res) => res.json())
       .then((data) => {
-        console.log(data);
-
         if (data.modifiedCount > 0) {
           toast.success(" Note Pinned SuccessFully");
           refetch();
@@ -83,13 +81,15 @@ const NoteCard = ({ note, index }) => {
               </button>
             )}
 
-            <button
+            <label
+              onClick={() => setIsEdit(note)}
+              htmlFor="my-modal"
               title="Edit your Note"
               className="btn btn-outline btn-circle bg-[#2dd4c0]"
             >
               {" "}
               <FaPencilRuler className="text-2xl font-bold" />{" "}
-            </button>
+            </label>
             <button
               title="Delete Note"
               className="btn btn-circle btn-outline btn-error"

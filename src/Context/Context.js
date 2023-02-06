@@ -8,7 +8,7 @@ const Context = ({ children }) => {
   const [count, setCount] = useState(0);
   const [page, setPage] = useState(0);
   const [size, setSize] = useState(6);
-
+  const [isedit, setIsEdit] = useState(null);
   const {
     data: allnote = [],
     refetch,
@@ -16,7 +16,7 @@ const Context = ({ children }) => {
   } = useQuery({
     queryKey: ["allnote"],
     queryFn: async () => {
-      const url = `http://localhost:5000/notes?page=${page}&size=${size}`;
+      const url = `https://notebook-server-flax.vercel.app/notes?page=${page}&size=${size}`;
       const res = await fetch(url);
       const data = await res.json();
       setCount(data.count);
@@ -38,6 +38,8 @@ const Context = ({ children }) => {
     setSize,
     isLoading,
     pages,
+    isedit,
+    setIsEdit,
   };
 
   return (

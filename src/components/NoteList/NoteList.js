@@ -1,11 +1,20 @@
 import React, { useContext } from "react";
 import { authContext } from "../../Context/Context";
 import Loader from "../Loader/Loader";
+import EditModal from "../NoteCard/EditModal";
 import NoteCard from "../NoteCard/NoteCard";
 
 const NoteList = () => {
-  const { allnote, refetch, pages, page, setPage, isLoading } =
-    useContext(authContext);
+  const {
+    allnote,
+    refetch,
+    pages,
+    page,
+    setPage,
+    isLoading,
+    isedit,
+    setIsEdit,
+  } = useContext(authContext);
 
   const handlePagination = (num) => {
     setPage(num);
@@ -45,6 +54,8 @@ const NoteList = () => {
           </button>
         ))}
       </div>
+
+      {isedit && <EditModal />}
     </div>
   );
 };

@@ -1,26 +1,28 @@
-import React, { useContext, useState } from "react";
-import { authContext } from "../../Context/Context";
-import { FaRegBell, FaBell } from "react-icons/fa";
+import React, { useContext } from "react";
 import { toast } from "react-hot-toast";
-const AddNoteModal = () => {
-  const { setNote, refetch } = useContext(authContext);
+import { authContext } from "../../Context/Context";
 
-  const [pinned, setPinned] = useState(0);
+const EditModal = () => {
+  const { isedit, refetch, setIsEdit } = useContext(authContext);
+  const { title, description, tagline, _id, pinned } = isedit;
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
     const form = event.target;
-    const title = form.title.value;
-    const tagline = form.tag.value;
-    const message = form.message.value;
+    const title = form.title.value || isedit?.title;
+    const tagline = form.tag.value || isedit?.tagline;
+    const message = form.message.value || isedit?.description;
+    const id = _id;
+    const noteInfo = {
+      title: title,
+      tagline: tagline,
+      description: message,
+    };
 
-    // post data from here
-
-    const url = "https://notebook-server-flax.vercel.app/notes";
-
+    const url = `https://notebook-server-flax.vercel.app/notes/${id}`;
     fetch(url, {
-      method: "POST",
+      method: "PUT",
       headers: {
         "Content-Type": "application/json",
       },
@@ -28,29 +30,28 @@ const AddNoteModal = () => {
         title: title,
         tagline: tagline,
         description: message,
-        pinned: 0,
       }),
     })
       .then((res) => res.json())
       .then((data) => {
-        if (data.acknowledged) {
-          setNote(null);
+        console.log(data);
+
+        if (data.modifiedCount > 0) {
+          setIsEdit(null);
+          toast.success(" Note Pinned SuccessFully");
           refetch();
-          toast.success("Note Added Successfully");
         }
       })
       .catch((err) => {
         if (err) {
-          setNote(null);
-          refetch();
-          toast.error("Failed to add Note . Try Again");
+          setIsEdit(null);
+          toast.error(`${err.message}`);
         }
       });
   };
 
   return (
     <div>
-      {" "}
       <div>
         <input type="checkbox" id="my-modal" className="modal-toggle" />
         <div className="modal ">
@@ -64,8 +65,7 @@ const AddNoteModal = () => {
                 <input
                   type="text"
                   name="title"
-                  required
-                  placeholder="Add a title"
+                  placeholder={title}
                   className=" input rounded-none p-0 mb-2 border-t-0 border-x-0 border-black focus:outline-none  focus:border-[#2dd4c0] w-full "
                 />
 
@@ -74,17 +74,15 @@ const AddNoteModal = () => {
                   name="tag"
                   minLength={10}
                   maxLength={35}
-                  placeholder="Add a tagline"
-                  required
+                  placeholder={tagline}
                   className=" input p-0 rounded-none mb-2 border-t-0 border-x-0 border-black focus:outline-none  focus:border-[#2dd4c0] w-full "
                 />
 
                 <textarea
                   type="text"
-                  required
                   name="message"
                   minLength={120}
-                  placeholder="Take A Note"
+                  placeholder={description}
                   className=" input p-0 rounded-none mb-2  border-t-0 border-x-0 border-black focus:outline-none  focus:border-[#2dd4c0] w-full "
                 />
 
@@ -106,4 +104,4 @@ const AddNoteModal = () => {
   );
 };
 
-export default AddNoteModal;
+export default EditModal;
