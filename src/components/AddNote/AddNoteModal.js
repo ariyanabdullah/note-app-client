@@ -5,7 +5,7 @@ import { toast } from "react-hot-toast";
 const AddNoteModal = () => {
   const { setNote, refetch } = useContext(authContext);
 
-  const [pinned, setPinned] = useState(0);
+  const [tag, setTag] = useState(null);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -72,10 +72,12 @@ const AddNoteModal = () => {
                 <input
                   type="text"
                   name="tag"
-                  minLength={10}
-                  maxLength={35}
-                  placeholder="Add a tagline"
+                  minLength={1}
+                  maxLength={25}
+                  placeholder="Add a tagline within 25 character"
                   required
+                  onChange={(tag) => setTag(tag.target.value)}
+                  title="You can't add more than 25 character in tagline"
                   className=" input p-0 rounded-none mb-2 border-t-0 border-x-0 border-black focus:outline-none  focus:border-[#2dd4c0] w-full "
                 />
 
@@ -87,6 +89,15 @@ const AddNoteModal = () => {
                   placeholder="Take A Note"
                   className=" input p-0 rounded-none mb-2  border-t-0 border-x-0 border-black focus:outline-none  focus:border-[#2dd4c0] w-full "
                 />
+
+                {tag && tag.length > 24 ? (
+                  <p className="text-sm my-2 font-thin text-warning">
+                    {" "}
+                    You can't add tagline more than 25 character{" "}
+                  </p>
+                ) : (
+                  <p> {""} </p>
+                )}
 
                 <button
                   type="submit"
